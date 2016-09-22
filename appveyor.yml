@@ -18,15 +18,15 @@ build_script:
       /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
       
 on_success:
-  - cmd: 7z a "$Env:APPVEYOR_BUILD_FOLDER\$Env:APPVEYOR_PROJECT_NAME.zip" "$Env:APPVEYOR_BUILD_FOLDER\cov-int\"
-  - cmd: curl --silent --show-error `
+- cmd: 7z a "$Env:APPVEYOR_BUILD_FOLDER\$Env:APPVEYOR_PROJECT_NAME.zip" "$Env:APPVEYOR_BUILD_FOLDER\cov-int\"
+- cmd: curl --silent --show-error `
     --output curl-out.txt `
     --form token="$Env:coverity_token" `
     --form email="$Env:coverity_email" `
     --form file=@$Env:APPVEYOR_BUILD_FOLDER\$Env:APPVEYOR_PROJECT_NAME.zip" `
     --form version=$Env:APPVEYOR_REPO_COMMIT" `
     --form description="AppVeyor Build."
-  - cmd: cat .\curl-out.txt
+- cmd: cat .\curl-out.txt
   
 notifications:
 - provider: Email
