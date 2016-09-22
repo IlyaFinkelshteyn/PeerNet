@@ -7,7 +7,7 @@ environment:
     secure: vBiSHFruVmaa7NLHJWzvHL4CHgOQ+vzDMYmR2LshjLM=
     
 install:
-- ps: cinst curl -y
+#- ps: cinst curl -y
 
 build_script:
 - ps: |
@@ -18,14 +18,15 @@ build_script:
       /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
       
 on_success:
-  7z a "PeerNet.zip" "cov-int"
-  
-  curl --form token=%coverity_token% `
-    --form email=%coverity_email% `
-    --form file=@PeerNet.zip `
-    --form version="1.0" `
-    --form description="AppVeyor Build." `
-    https://scan.coverity.com/builds?project=kklouzal%2FPeerNet
+  7z a "$Env:APPVEYOR_BUILD_FOLDER\$Env:APPVEYOR_PROJECT_NAME.zip" "$Env:APPVEYOR_BUILD_FOLDER\cov-int\"
+  curl --silent --show-error `
+    --output curl-out.txt `
+    --form token="$Env:coverity_token" `
+    --form email="$Env:coverity_email" `
+    --form file=@$Env:APPVEYOR_BUILD_FOLDER\$Env:APPVEYOR_PROJECT_NAME.zip" `
+    --form version=$Env:APPVEYOR_REPO_COMMIT" `
+    --form description="AppVeyor Build."
+  cat .\curl-out.txt
   
 notifications:
 - provider: Email
